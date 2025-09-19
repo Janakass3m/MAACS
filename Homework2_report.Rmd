@@ -6,7 +6,7 @@ output: html_document
 
 ## Name
 
-Please enter your name here.
+Jana Kassem
 
 ### Setup
 
@@ -14,8 +14,10 @@ Read in the data with `read_csv()` and store the data as an R object named `data
 
 
 ```{r}
-## Load the data and any necessary packages here.
+library(readr)
+dataset <- read_csv("maacs.csv.gz")
 
+dataset
 ```
 
 ## Part 1
@@ -31,7 +33,20 @@ NOTE: In order to write this function, you will need to translate the statement 
 NOTE: For this part, do not use any plots.
 
 ```{r}
-## Write your function here
+library(dplyr)
+
+fev1_age_correlation <- function(data) {
+  data <- data %>% 
+    select(age, fev1) %>% 
+    na.omit()
+  
+  corr_value <- cor(data$age, data$fev1)
+  
+  # check if correlation is positive
+  return(corr_value > 0)
+}
+
+fev1_age_correlation(dataset)
 
 ```
 
@@ -43,13 +58,15 @@ Fit a linear regression model with FEV1 as the outcome and age as a predictor.
 How much does FEV1 change for a 1-year increase in the child's age? 
 
 ```{r}
-## Add your code here
+model <- lm(fev1 ~ age, data = dataset)
+summary(model)
 
 ```
 
 
 Write your data analysis statement interpreting the regression model here:
 
+For every additional year of age, a child’s FEV1 increases on average by about 0.17 units
 
 
 ## Part 3
@@ -58,19 +75,29 @@ Develop **three** supporting premises derived from the data that support the sta
 
 NOTE: At least one supporting premise should use a plot.
 
-```{r}
-## Add your code here
+```{r, warning=FALSE, message=FALSE}
+library(ggplot2)
+
+# Scatterplot with regression line
+ggplot(dataset, aes(x = age, y = fev1)) +
+  geom_point() +
+  geom_smooth(method = "lm", color = "red") +
+  labs(
+    title = "Scatterplot of FEV1 vs Age",
+    x = "Age (years)",
+    y = "FEV1"
+  ) +
+  theme_minimal()
 
 ```
 
-
 Write the three supporting premise statements here:
 
-1. 
+1. The estimated slope for age is positive and statistically significant
 
-2. 
+2. The mean FEV1 for older children (above median age) is higher than the mean FEV1 for younger children (below median age).
 
-3. 
+3. A scatter plot of FEV1 vs. age with a fitted regression line shows an upward trend.
 
 
 ## Part 4
@@ -87,24 +114,80 @@ For statements involving plots, instead of returning `TRUE` or `FALSE`, you func
 ```{r}
 ## Function for supporting premise statement 1
 
+premise1 <- function(data, alpha = 0.05) {
+  df = subset(data, !is.na(age) & !is.na(fev1))
+  model = lm(fev1 ~ age, data = df)
+  sum = summary(model)
+  slope = coef(model)[["age"]]
+  pval = coef(sum)["age", "Pr(>|t|)"]
+  slope > 0 && !is.na(pval) && pval < alpha
+}
+
+premise1(dataset)
+
+
 ```
 
 
 ```{r}
 ## Function for supporting premise statement 2
 
+premise2 <- function(data) {
+  df = subset(data, !is.na(age) & !is.na(fev1))
+  med_age = median(df$age)
+  young = df$fev1[df$age < med_age]
+  old = df$fev1[df$age >= med_age]
+  mean(old, na.rm = TRUE) > mean(young, na.rm = TRUE)
+}
+
+premise2(dataset)
+
 ```
 
 
-```{r}
+```{r, warning = FALSE, message=FALSE}
 ## Function for supporting premise statement 3
+library(ggplot2)
+library(tibble)
+
+premise3 <- function(data) {
+  
+  df <- subset(data, !is.na(age) & !is.na(fev1))
+  
+  # Actual scatterplot
+  actual <- ggplot(df, aes(x = age, y = fev1)) +
+    geom_point(alpha = 0.6) +
+    geom_smooth(method = "lm", color = "red") +
+    labs(title = "Scatterplot of FEV1 vs Age",
+      x = "Age (years)",
+      y = "FEV1") +
+    theme_minimal()
+  print(actual)
+  
+  # Hypothetical upward-trend
+  set.seed(123) 
+  x <- rnorm(200, mean = 8, sd = 2)
+  y <- x + rnorm(200, mean = 0, sd = 1)
+  
+  hypothetical <- tibble(age = x, fev1 = y) |>
+    ggplot(aes(x = age, y = fev1)) +
+    geom_point(alpha = 0.6) +
+    geom_smooth(method = "lm", color = "blue") +
+    labs(
+      title = "Hypothetical FEV1 vs Age (Simulation)",
+      x = "Age (years)",
+      y = "FEV1"
+    ) +
+    theme_minimal()
+  print(hypothetical)
+}
+
+premise3(dataset)
+
 
 ```
 
 Execute each of your function and show that the produce the expected output.
-
-
-
 
 ## Part 5
 
@@ -114,4 +197,6 @@ Create a fault tree for the alternative outcome describing how the alternative o
 
 Your fault tree should be created as a separate image and does not need to be created in R. Upload the image of the fault tree to Canvas.
 
+
+FEV1 values are the same in children who are older and younger.
 
