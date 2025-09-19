@@ -353,9 +353,8 @@ display: none;
 </div>
 
 
-<div id="name" class="section level2">
-<h2>Name</h2>
-<p>Jana Kassem</p>
+<div id="jana-kassem" class="section level2">
+<h2>Jana Kassem</h2>
 <div id="setup" class="section level3">
 <h3>Setup</h3>
 <p>Read in the data with <code>read_csv()</code> and store the data as
@@ -403,16 +402,9 @@ statement above into something that can be checked with the data. There
 are many ways in which you can do that translation correctly and you
 only need to pick one way here.</p>
 <p>NOTE: For this part, do not use any plots.</p>
-<pre class="r"><code>library(dplyr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>fev1_age_correlation &lt;- function(data) {
+<pre class="r"><code>library(dplyr)
+
+fev1_age_correlation &lt;- function(data) {
   data &lt;- data %&gt;% 
     select(age, fev1) %&gt;% 
     na.omit()

@@ -4,9 +4,8 @@ output: html_document
 ---
 
 
-## Name
+## Jana Kassem
 
-Jana Kassem
 
 ### Setup
 
@@ -32,7 +31,7 @@ NOTE: In order to write this function, you will need to translate the statement 
 
 NOTE: For this part, do not use any plots.
 
-```{r}
+```{r, message =FALSE, warning =FALSE}
 library(dplyr)
 
 fev1_age_correlation <- function(data) {
