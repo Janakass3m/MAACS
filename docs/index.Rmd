@@ -81,6 +81,16 @@ NOTE: At least one supporting premise should use a plot.
 ```{r, warning=FALSE, message=FALSE}
 library(ggplot2)
 
+# The slope is positive and statistically significant
+summary(model)
+
+# Older kids have higher average FEV1 versus younger kids
+med_age <- median(dataset$age, na.rm = TRUE)
+mean_younger <- mean(dataset$fev1[dataset$age < med_age], na.rm = TRUE)
+mean_older   <- mean(dataset$fev1[dataset$age >= med_age], na.rm = TRUE)
+cat("The mean FEV1 for younger children (below median age) is", round(mean_younger, 2), "\n")
+cat("The mean FEV1 for older children (at or above median age) is", round(mean_older, 2), "\n")
+
 # Scatterplot with regression line
 ggplot(dataset, aes(x = age, y = fev1)) +
   geom_point() +

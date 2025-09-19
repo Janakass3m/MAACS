@@ -461,7 +461,36 @@ other summary statistics, or model results.</p>
 <p>NOTE: At least one supporting premise should use a plot.</p>
 <pre class="r"><code>library(ggplot2)
 
-# Scatterplot with regression line
+# The slope is positive and statistically significant
+summary(model)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = fev1 ~ age, data = dataset)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.51099 -0.27100  0.00196  0.23616  2.15477 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -0.001199   0.134696  -0.009    0.993    
+## age          0.171162   0.010984  15.583   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.4827 on 131 degrees of freedom
+##   (17 observations deleted due to missingness)
+## Multiple R-squared:  0.6496, Adjusted R-squared:  0.6469 
+## F-statistic: 242.8 on 1 and 131 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code># Older kids have higher average FEV1 versus younger kids
+med_age &lt;- median(dataset$age, na.rm = TRUE)
+mean_younger &lt;- mean(dataset$fev1[dataset$age &lt; med_age], na.rm = TRUE)
+mean_older   &lt;- mean(dataset$fev1[dataset$age &gt;= med_age], na.rm = TRUE)
+cat(&quot;The mean FEV1 for younger children (below median age) is&quot;, round(mean_younger, 2), &quot;\n&quot;)</code></pre>
+<pre><code>## The mean FEV1 for younger children (below median age) is 1.33</code></pre>
+<pre class="r"><code>cat(&quot;The mean FEV1 for older children (at or above median age) is&quot;, round(mean_older, 2), &quot;\n&quot;)</code></pre>
+<pre><code>## The mean FEV1 for older children (at or above median age) is 2.54</code></pre>
+<pre class="r"><code># Scatterplot with regression line
 ggplot(dataset, aes(x = age, y = fev1)) +
   geom_point() +
   geom_smooth(method = &quot;lm&quot;, color = &quot;red&quot;) +
