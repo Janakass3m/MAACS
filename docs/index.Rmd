@@ -50,6 +50,10 @@ fev1_age_correlation(dataset)
 ```
 
 
+The function below takes the dataset as input, removes missing values, and calculates 
+the correlation between age and FEV1. It then returns TRUE if the correlation is 
+positive and FALSE otherwise.
+
 ## Part 2
 
 Fit a linear regression model with FEV1 as the outcome and age as a predictor.
@@ -127,15 +131,21 @@ premise1(dataset)
 
 ```
 
+The regression output shows that the slope for age is positive with a p-value 
+less than 0.05. This indicates that as age increases, FEV1 tends to 
+increase significantly, supporting the statement.
 
 ```{r}
 ## Function for supporting premise statement 2
 
 premise2 <- function(data) {
   df = subset(data, !is.na(age) & !is.na(fev1))
+  # Split into older and younger kids
   med_age = median(df$age)
   young = df$fev1[df$age < med_age]
   old = df$fev1[df$age >= med_age]
+  # Compare group means
+  # Return true if the mean of older kids is higher
   mean(old, na.rm = TRUE) > mean(young, na.rm = TRUE)
 }
 
@@ -143,6 +153,9 @@ premise2(dataset)
 
 ```
 
+The results show that older children have a higher mean FEV1 compared to 
+younger children, which provides further evidence for the positive association 
+between age and lung function.
 
 ```{r, warning = FALSE, message=FALSE}
 ## Function for supporting premise statement 3
@@ -186,7 +199,11 @@ premise3(dataset)
 
 ```
 
-Execute each of your function and show that the produce the expected output.
+
+The scatterplot shows an upward-sloping red regression line through the data 
+points, which visually supports the finding that FEV1 tends to increase as 
+children get older. This graphical evidence complements the model results and 
+summary statistics from the previous premises.
 
 ## Part 5
 
